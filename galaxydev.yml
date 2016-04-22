@@ -74,7 +74,7 @@
   - nginx_ssl_key_file: /home/pvh/Documents/SANBI/Certs/sanbi.key
 
   roles:
-  # SANBI basic-server role: https://github.com/pvanheus/sanbi-basic-server
+  # SANBI basic-server role: https://github.com/SANBI-SA/sanbi-basic-server
   - { role: basic-server, tags: basic-server }
   # Galaxy Project https://github.com/galaxyproject/ansible-galaxy-os
   - { role: ansible-galaxy-os, tags: ansible-galaxy-os }
