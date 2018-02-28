@@ -1,0 +1,4 @@
+---
+nodeexp_service_dir: /etc/init.d/node-exporter
+nodeexp_service_file: ./files/node-exporter
+nodeexp_start_pre: chmod +x {{ nodeexp_service_dir }}

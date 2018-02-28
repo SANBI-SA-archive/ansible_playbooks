@@ -1,0 +1,10 @@
+#%Module1.0
+proc ModulesHelp { } {
+	puts stderr "This is the description of the module"
+}
+
+set software_name SOFTWARE
+set software_dir /cip0/software/x86_64/$software_name
+append-path PATH $software_dir/bin
+append-path MANPATH $software_dir/share/man
+append-path LD_LIBRARY_PATH $software_dir/lib64

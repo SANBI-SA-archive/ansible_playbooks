@@ -1,0 +1,41 @@
+---
+- hosts: services
+  become: true
+  vars_files:
+      - ./vars/vars.yml
+  tasks:
+  - debug:
+          msg: "System is {{ ansible_distribution }} v{{ ansible_distribution_version }}"
+    tags:
+      - debug
+  - name: Gather variables for distribution
+    include_vars: "{{ item }}"
+    with_first_found:
+      - "vars/{{ ansible_distribution }}_{{ ansible_distribution_version }}.yml"
+      - "vars/{{ ansible_distribution }}.yml"
+  - name: Create directories on target
+    shell: mkdir -p /opt/prometheus
+  - name: Download node-exporter binary
+    get_url:
+        url: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz
+        dest: /opt/prometheus/
+  - name: Extract archive
+    shell: "{{ item }}"
+    args:
+      chdir: /opt/prometheus
+    with_items:
+      - tar zxf node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz
+      - mv node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter node_exporter
+      - rm -rf node_exporter-{{ node_exporter_version }}.linux-amd64
+  - name: Copy service file
+    copy: src={{ nodeexp_service_file }} dest={{ nodeexp_service_dir }}
+  - name: Service file cleanup
+    shell: "{{ nodeexp_start_pre }}"
+    when: nodeexp_start_pre is defined
+  - name: Service activation and start
+    service:
+      name: node-exporter
+      state: started
+      enabled: yes
+  - name: Cleanup
+    shell: rm -rf /opt/prometheus/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz

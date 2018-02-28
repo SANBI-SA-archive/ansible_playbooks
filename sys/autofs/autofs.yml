@@ -1,0 +1,46 @@
+---
+
+- hosts: all
+  tasks:
+    - name: Insatll required packages on Debian-based system
+      apt: name={{ item }} state=installed update_cache=yes
+      with_items:
+        - ntp
+        - nfs-common
+        - autofs
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: Install required packages on RHEL based system
+      yum: name={{ item }} state=installed update_cache=yes
+      with_items:
+        - ntp
+        - nfs-utils
+        - nfs-utils-lib
+        - autofs
+      when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+    - name: Create directories
+      shell: mkdir -p /net
+
+    - name: Copy files for autofs
+      copy:
+        src: files/etc/
+        dest: /etc/
+        force: yes
+   
+#    - name: Final touches
+#      shell: "{{ item }}"
+#      with_items:
+#      - echo N > /sys/module/nfs/parameters/nfs4_disable_idmapping
+#      - nfsidmap -c
+   
+    - name: Restart services
+      service: 
+        name: autofs
+        state: restarted
+
+    - name: Link people and cip0
+      shell: "{{ item }}"
+      with_items:
+        - ln -s /net/datasrv3hs.sanbi.ac.za/data12/people/ /usr/people
+        - ln -s /net/datasrv3hs.sanbi.ac.za/cip0 /cip0

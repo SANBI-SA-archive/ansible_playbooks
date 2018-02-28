@@ -1,0 +1,4 @@
+---
+nodeexp_service_dir: /etc/systemd/system/node-exporter.service
+nodeexp_service_file: ./files/node-exporter.service
+nodeexp_start_pre: systemctl daemon-reload
