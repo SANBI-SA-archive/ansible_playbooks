@@ -1,0 +1,8 @@
+#!/bin/bash
+
+key="$1"
+
+opts="-fstype=nfs4,hard,intr,nodev,nosuid,async"
+#opts="-fstype=nfs,nfsvers=3,hard,intr,nodev,nosuid"
+
+echo "${opts} ${key}:/"

@@ -1,0 +1,13 @@
+[Unit]
+Description=Node Exporter
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/prometheus
+ExecStart=/opt/prometheus/node_exporter --collector.nfs --collector.mountstats
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

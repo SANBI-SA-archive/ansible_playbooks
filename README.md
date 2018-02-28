@@ -1,2 +1,3 @@
-# ansible_playbooks
-Ansible playbooks used at SANBI
+# SANBI Ansible Playbooks
+
+This repository contains the playbooks used for various services at SANBI.

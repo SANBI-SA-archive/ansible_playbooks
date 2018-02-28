@@ -1,0 +1,37 @@
+---
+
+- hosts: datahost
+  tasks:
+
+### Check if variables are set
+    - name: Fail if variables aren't set
+      fail:
+        msg: "ERR: app_name variable not set!"
+      when: app_name is not defined
+
+
+### Create files and optionally download software
+
+    - name: Create the directories for the new app
+      shell: "{{ item }}"
+      with_items:
+        - mkdir -p /cip0/software/modules/modulefiles/{{ app_name }}
+        - mkdir -p /cip0/software/x86_64/{{ app_name }}
+
+### Possibly download the software specified from a URL
+    - debug:
+        msg: "Download is SKIPPED!"
+      when: app_url is not defined
+
+    - name: Downloading software package for "{{ app_name }}"
+      get_url:
+        url: '{{ app_url }}'
+        dest: /cip0/software/x86_64/{{ app_name }}
+      when: app_url is defined
+
+### Copy template for module
+    
+    - name: "Adding template modulefile: /cip0/software/modules/modulefiles/{{ app_name }}/{{ app_name }}"
+      copy:
+        src: module_template
+        dest: /cip0/software/modules/modulefiles/{{ app_name }}/{{ app_name }}
